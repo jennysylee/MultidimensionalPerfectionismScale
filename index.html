@@ -1,1 +1,259 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Multidimensional Perfectionism Questionnaire</title>
+  <style>
+    body{
+      font-family:Arial,sans-serif;
+      max-width:1100px;
+      margin:24px auto;
+      padding:0 16px;
+      line-height:1.5;
+      color:#1f2937;
+      background:#f9fafb;
+    }
+    .top{
+      background:#fff;
+      padding:18px;
+      border-radius:14px;
+      box-shadow:0 1px 4px rgba(0,0,0,.06);
+      margin-bottom:16px;
+    }
+    .card{
+      background:#fff;
+      border-radius:14px;
+      padding:18px;
+      box-shadow:0 1px 4px rgba(0,0,0,.06);
+      margin:16px 0;
+    }
+    .item{
+      padding:16px 0;
+      border-top:1px solid #e5e7eb;
+    }
+    .item:first-child{ border-top:none; }
+    fieldset{
+      border:none;
+      padding:0;
+      margin:0;
+    }
+    legend{
+      font-weight:700;
+      margin-bottom:10px;
+    }
+    .scale-labels{
+      display:flex;
+      justify-content:space-between;
+      font-size:13px;
+      color:#6b7280;
+      margin-top:8px;
+    }
+    .scale{
+      display:grid;
+      grid-template-columns:repeat(7,minmax(0,1fr));
+      gap:8px;
+      margin-top:10px;
+    }
+    label.opt{
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      border:1px solid #d1d5db;
+      border-radius:12px;
+      padding:10px 6px;
+      cursor:pointer;
+      background:#fafafa;
+      user-select:none;
+    }
+    label.opt:hover{
+      background:#eef2ff;
+      border-color:#818cf8;
+    }
+    input[type="radio"]{
+      margin-bottom:6px;
+      transform:scale(1.1);
+    }
+    button{
+      background:#2563eb;
+      color:#fff;
+      border:none;
+      border-radius:12px;
+      padding:12px 18px;
+      font-size:16px;
+      cursor:pointer;
+      margin-top:10px;
+    }
+    button:hover{ background:#1d4ed8; }
+    #result{
+      margin-top:18px;
+      padding:16px;
+      border-radius:14px;
+      background:#eff6ff;
+      box-shadow:0 1px 4px rgba(0,0,0,.06);
+    }
+    .small{
+      color:#6b7280;
+      font-size:14px;
+    }
+    .score-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+      gap:12px;
+      margin-top:12px;
+    }
+    .score-box{
+      background:#fff;
+      border:1px solid #dbeafe;
+      border-radius:12px;
+      padding:12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="top">
+    <h1>Multidimensional Perfectionism Questionnaire</h1>
+    <p>This questionnaire uses a 1–7 scale. 1 means strongly disagree and 7 means strongly agree. Answer every item to see your scores for self-oriented, other-oriented, and socially prescribed perfectionism.</p>
+    <p class="small">Based on the Multidimensional Perfectionism Scale by Hewitt & Flett (1991, 2004). This version is for research/educational use only.</p>
+  </div>
+
+  <form id="form">
+    <div class="card">
+      <div id="questions"></div>
+      <button type="submit">Score questionnaire</button>
+    </div>
+  </form>
+
+  <div id="result" aria-live="polite"></div>
+
+  <script>
+    const items = {
+      1: 'When I am working on something, I cannot relax until it is perfect.',
+      2: 'I am not likely to criticize someone for giving up too easily.',
+      3: 'It is not important that the people I am close to are successful.',
+      4: 'I seldom criticize my friends for accepting second best.',
+      5: 'I find it difficult to meet others’ expectations of me.',
+      6: 'One of my goals is to be perfect in everything I do.',
+      7: 'Everything that others do must be of top-notch quality.',
+      8: 'I never aim for perfection in my work.',
+      9: 'Those around me readily accept that I can make mistakes too.',
+      10: 'It doesn’t matter when someone close to me does not do their absolute best.',
+      11: 'The better I do, the better I am expected to do.',
+      12: 'I seldom feel the need to be perfect.',
+      13: 'Anything I do that is less than excellent will be seen as poor work by those around me.',
+      14: 'I strive to be as perfect as I can be.',
+      15: 'It is very important that I am perfect in everything I attempt.',
+      16: 'I have high expectations for the people who are important to me.',
+      17: 'I strive to be the best at everything I do.',
+      18: 'The people around me expect me to succeed at everything I do.',
+      19: 'I do not have very high expectations for those around me.',
+      20: 'I demand nothing less than perfection from myself.',
+      21: 'Others will like me even if I don’t excel at everything.',
+      22: 'I can’t be bothered with people who won’t strive to better themselves.',
+      23: 'It makes me uneasy to see an error in my work.',
+      24: 'I do not expect a lot from my friends.',
+      25: 'Success means that I work even harder to please others.',
+      26: 'If I ask someone to do something, I expect it to be done flawlessly.',
+      27: 'I cannot stand to see people close to me make mistakes.',
+      28: 'I am perfectionistic in setting my goals.',
+      29: 'The people who matter to me should never let me down.',
+      30: 'Others think I am okay, even when I do not succeed.',
+      31: 'I feel that people are too demanding of me.',
+      32: 'I must work to my full potential at all times.',
+      33: 'Although they may not show it, other people get very upset with me when I slip up.',
+      34: 'I do not have to be the best at whatever I am doing.',
+      35: 'My family expects me to be perfect.',
+      36: 'I do not have very high goals for myself.',
+      37: 'My parents rarely expected me to excel in all aspects of my life.',
+      38: 'I respect people who are average.',
+      39: 'People expect nothing less than perfection from me.',
+      40: 'I set very high standards for myself.',
+      41: 'People expect more from me than I am capable of giving.',
+      42: 'I must always be successful at school or work.',
+      43: 'It does not matter to me when a close friend does not try their hardest.',
+      44: 'People around me think I am still competent even if I make a mistake.',
+      45: 'I seldom expect others to excel at whatever they do.'
+    };
+
+    const reverse = new Set([2,3,4,8,9,10,12,19,21,24,30,34,36,37,38,43,44,45]);
+    const selfO = [1,6,8,12,14,15,17,20,23,28,32,34,36,40,42];
+    const otherO = [2,3,4,7,10,16,19,22,24,26,27,29,38,43,45];
+    const socP = [5,9,11,13,18,21,25,30,31,33,35,37,39,41,44];
+
+    const questions = document.getElementById('questions');
+
+    for (let i = 1; i <= 45; i++) {
+      const wrapper = document.createElement('div');
+      wrapper.className = 'item';
+
+      wrapper.innerHTML = `
+        <fieldset>
+          <legend>${i}. ${items[i]}</legend>
+          <div class="scale-labels">
+            <span>Strongly disagree</span>
+            <span>Strongly agree</span>
+          </div>
+          <div class="scale">
+            ${Array.from({ length: 7 }, (_, idx) => {
+              const v = idx + 1;
+              return `
+                <label class="opt">
+                  <input required type="radio" name="q${i}" value="${v}">
+                  ${v}
+                </label>
+              `;
+            }).join('')}
+          </div>
+        </fieldset>
+      `;
+
+      questions.appendChild(wrapper);
+    }
+
+    function scoreSet(arr, form) {
+      return arr.reduce((sum, n) => {
+        let v = +new FormData(form).get('q' + n);
+        if (reverse.has(n)) v = 8 - v;
+        return sum + v;
+      }, 0);
+    }
+
+    const form = document.getElementById('form');
+    const result = document.getElementById('result');
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const answers = [];
+      for (let i = 1; i <= 45; i++) {
+        const val = new FormData(form).get('q' + i);
+        if (!val) {
+          result.innerHTML = '<p>Please answer all 45 items before scoring.</p>';
+          return;
+        }
+        answers.push(+val);
+      }
+
+      const selfScore = scoreSet(selfO, form);
+      const otherScore = scoreSet(otherO, form);
+      const socialScore = scoreSet(socP, form);
+      const overall = selfScore + otherScore + socialScore;
+
+      result.innerHTML = `
+        <h2>Your scores</h2>
+        <div class="score-grid">
+          <div class="score-box"><strong>Self-oriented</strong><br>${selfScore}/105</div>
+          <div class="score-box"><strong>Other-oriented</strong><br>${otherScore}/105</div>
+          <div class="score-box"><strong>Socially prescribed</strong><br>${socialScore}/105</div>
+          <div class="score-box"><strong>Overall total</strong><br>${overall}/315</div>
+        </div>
+        <p class="small">Higher scores indicate stronger endorsement of that perfectionism dimension. This is for educational/research use, not diagnosis.</p>
+      `;
+
+      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    });
+  </script>
+</body>
+</html>
 
